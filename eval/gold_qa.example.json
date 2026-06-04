@@ -1,0 +1,7 @@
+[
+  {
+    "question": "What is this project intended to verify?",
+    "expected_sources": [],
+    "expected_answer_contains": ["RAG"]
+  }
+]
