@@ -94,9 +94,33 @@ python -m rag_app ingest --data-dir .\data --reset
 python -m rag_app retrieve "Ask Question"
 python -m rag_app ask "Ask Question"
 python -m rag_app eval --gold-file .\eval\gold_qa.example.json --top-k 5
-
+```
 The CLI should be sufficient to verify the complete RAG flow.
 
 Do not add Streamlit by default.
 Do not add FastAPI by default.
 FastAPI may be added later only if explicitly requested.
+
+---
+
+## Python Environment
+
+All Python commands must use the repository virtual environment:
+
+```powershell
+.\.venv\Scripts\python.exe
+```
+For tests, always run:
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest
+```
+
+For dependency installation, always run:
+
+```powershell
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+```
+Never run python, pip, or pytest directly because they may resolve to the system Python.
+
+

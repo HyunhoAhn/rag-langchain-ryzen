@@ -8,7 +8,7 @@ from pathlib import Path
 
 
 DEFAULT_LEMONADE_BASE_URL = "http://localhost:13305/v1"
-DEFAULT_LEMONADE_CHAT_MODEL = "user.Qwen3-8B-GGUF"
+DEFAULT_LEMONADE_CHAT_MODEL = "Qwen3-8B-GGUF"
 DEFAULT_CHROMA_DIR = "./chroma_db"
 DEFAULT_COLLECTION_NAME = "ryzen_ai_max_rag"
 DEFAULT_EMBEDDING_MODEL = "BAAI/bge-m3"

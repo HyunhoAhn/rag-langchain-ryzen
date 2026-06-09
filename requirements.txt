@@ -1,6 +1,9 @@
 langchain
+langchain-community
 langchain-chroma
 langchain-openai
 chromadb
+pypdf
 python-dotenv
+requests
 pytest

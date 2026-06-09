@@ -27,7 +27,15 @@ python -m rag_app ask "Ask Question"
 python -m rag_app eval --gold-file .\eval\gold_qa.example.json --top-k 5
 ```
 
-The commands are currently skeletons and print `not implemented yet`.
+Currently implemented:
+
+```powershell
+python -m rag_app check
+```
+
+The check command calls the OpenAI-compatible Lemonade Server `/models` endpoint, prints the configured `LEMONADE_BASE_URL` and `LEMONADE_CHAT_MODEL`, and reports whether the configured model appears in the returned model list when the response includes one.
+
+The ingest, retrieve, ask, and eval commands are still placeholders.
 
 ## Tests
 

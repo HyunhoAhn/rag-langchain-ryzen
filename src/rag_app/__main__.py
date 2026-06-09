@@ -4,6 +4,17 @@ from __future__ import annotations
 
 import argparse
 
+from rag_app.config import load_config
+from rag_app.lemonade_client import LemonadeCheckResult, check_lemonade_models
+
+
+def _format_model_found(result: LemonadeCheckResult) -> str:
+    if result.model_found is True:
+        return "yes"
+    if result.model_found is False:
+        return "no"
+    return "unknown"
+
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
@@ -33,7 +44,24 @@ def build_parser() -> argparse.ArgumentParser:
 
 def main(argv: list[str] | None = None) -> int:
     parser = build_parser()
-    parser.parse_args(argv)
+    args = parser.parse_args(argv)
+
+    if args.command == "check":
+        config = load_config()
+        result = check_lemonade_models(config)
+
+        print(f"Lemonade base URL: {result.base_url}")
+        print(f"Lemonade chat model: {result.model_name}")
+        print(f"Models endpoint: {result.models_url}")
+        print(f"Server reachable: {'yes' if result.reachable else 'no'}")
+        print(f"Configured model listed: {_format_model_found(result)}")
+        if result.error:
+            print(f"Note: {result.error}")
+
+        if not result.reachable or result.model_found is False:
+            return 1
+        return 0
+
     print("not implemented yet")
     return 0
 

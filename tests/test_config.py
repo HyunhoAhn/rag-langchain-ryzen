@@ -14,7 +14,7 @@ def test_load_config_uses_defaults(tmp_path, monkeypatch):
     config = load_config(tmp_path / ".env")
 
     assert config.lemonade_base_url == "http://localhost:13305/v1"
-    assert config.lemonade_chat_model == "user.Qwen3-8B-GGUF"
+    assert config.lemonade_chat_model == "Qwen3-8B-GGUF"
     assert config.chroma_dir == "./chroma_db"
     assert config.collection_name == "ryzen_ai_max_rag"
     assert config.embedding_model == "BAAI/bge-m3"
