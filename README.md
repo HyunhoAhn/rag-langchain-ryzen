@@ -10,35 +10,38 @@ It is not a product, chatbot UI, frontend, deployment project, or benchmark harn
 conda deactivate
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
-pip install -e .
-pip install -r requirements.txt
+.\.venv\Scripts\python.exe -m pip install -e .
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
 copy .env.example .env
 ```
 
 ## CLI
 
-The intended interface is `python -m rag_app`.
+The intended interface is `python -m rag_app`, run through the repository virtual environment.
 
 ```powershell
-python -m rag_app check
-python -m rag_app ingest --data-dir .\data --reset
-python -m rag_app retrieve "Ask Question"
-python -m rag_app ask "Ask Question"
-python -m rag_app eval --gold-file .\eval\gold_qa.example.json --top-k 5
+.\.venv\Scripts\python.exe -m rag_app check
+.\.venv\Scripts\python.exe -m rag_app ingest --data-dir .\data --reset
+.\.venv\Scripts\python.exe -m rag_app retrieve "Ask Question"
+.\.venv\Scripts\python.exe -m rag_app ask "Ask Question"
+.\.venv\Scripts\python.exe -m rag_app eval --gold-file .\eval\gold_qa.example.json --top-k 5
 ```
 
 Currently implemented:
 
 ```powershell
-python -m rag_app check
+.\.venv\Scripts\python.exe -m rag_app check
+.\.venv\Scripts\python.exe -m rag_app ingest --data-dir .\data --reset
 ```
 
 The check command calls the OpenAI-compatible Lemonade Server `/models` endpoint, prints the configured `LEMONADE_BASE_URL` and `LEMONADE_CHAT_MODEL`, and reports whether the configured model appears in the returned model list when the response includes one.
 
-The ingest, retrieve, ask, and eval commands are still placeholders.
+The ingest command loads `.txt`, `.md`, and `.pdf` files from `--data-dir`, chunks them with a `RecursiveCharacterTextSplitter`, embeds them with `HuggingFaceEmbeddings`, and writes them to the configured persistent Chroma collection. It uses `EMBEDDING_MODEL` from `.env` or the environment, defaulting to `BAAI/bge-m3`, on CPU with normalized embeddings. The first run may download the embedding model through `sentence-transformers`.
+
+The retrieve, ask, and eval commands are still placeholders.
 
 ## Tests
 
 ```powershell
-python -m pytest
+.\.venv\Scripts\python.exe -m pytest
 ```

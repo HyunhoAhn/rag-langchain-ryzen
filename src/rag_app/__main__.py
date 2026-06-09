@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 
 from rag_app.config import load_config
+from rag_app.ingest import ingest_documents
 from rag_app.lemonade_client import LemonadeCheckResult, check_lemonade_models
 
 
@@ -60,6 +61,20 @@ def main(argv: list[str] | None = None) -> int:
 
         if not result.reachable or result.model_found is False:
             return 1
+        return 0
+
+    if args.command == "ingest":
+        config = load_config()
+        try:
+            result = ingest_documents(config, args.data_dir, reset=args.reset)
+        except ValueError as exc:
+            print(f"Ingest failed: {exc}")
+            return 1
+
+        print(f"Ingested {result.source_document_count} source document(s).")
+        print(f"Stored {result.chunk_count} chunk(s) in Chroma.")
+        print(f"Chroma directory: {result.chroma_dir}")
+        print(f"Collection: {result.collection_name}")
         return 0
 
     print("not implemented yet")
