@@ -8,6 +8,7 @@ import sys
 from rag_app.config import load_config
 from rag_app.ingest import ingest_documents
 from rag_app.lemonade_client import LemonadeCheckResult, check_lemonade_models
+from rag_app.rag_chain import LemonadeGenerationError, answer_question, format_source_list
 from rag_app.retrieval import empty_store_message, format_retrieved_chunks, retrieve_documents
 
 
@@ -44,6 +45,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     ask = subparsers.add_parser("ask", help="Generate a source-grounded answer.")
     ask.add_argument("question", help="Question to answer.")
+    ask.add_argument("--top-k", type=int, default=5, help="Number of chunks to retrieve.")
 
     evaluate = subparsers.add_parser("eval", help="Run a basic retrieval evaluation.")
     evaluate.add_argument("--gold-file", default="./eval/gold_qa.example.json", help="Gold QA JSON file.")
@@ -104,6 +106,35 @@ def main(argv: list[str] | None = None) -> int:
             print("No chunks matched the query.")
             return 0
         print(format_retrieved_chunks(result.chunks))
+        return 0
+
+    if args.command == "ask":
+        config = load_config()
+        try:
+            result = answer_question(config, args.question, top_k=args.top_k)
+        except LemonadeGenerationError as exc:
+            print("Could not reach Lemonade Server or generate an answer.")
+            print(f"Details: {exc}")
+            print("Try checking the configured local server and model:")
+            print("python -m rag_app check")
+            return 1
+
+        if not result.store_ready:
+            print(empty_store_message(config))
+            return 1
+
+        print("Question:")
+        print(result.question)
+        print()
+        print("Answer:")
+        print(result.answer)
+        print()
+        print("Retrieved sources:")
+        print(format_source_list(result.chunks))
+        print()
+        print(f"Retrieval time: {result.retrieval_time_seconds:.3f}s")
+        print(f"Generation time: {result.generation_time_seconds:.3f}s")
+        print(f"Total time: {result.total_time_seconds:.3f}s")
         return 0
 
     print("not implemented yet")
