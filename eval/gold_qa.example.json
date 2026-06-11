@@ -4,11 +4,19 @@
     "expected_source_contains": "sample.md"
   },
   {
-    "question": "이 프로젝트의 RAG 구성요소는 무엇인가?",
-    "expected_source_contains": "sample.md"
+    "question": "로컬 LLM은 어떤 서버를 통해 호출하나요?",
+    "expected_source_contains": "lemonade_server.md"
   },
   {
-    "question": "LLM은 어떤 서버를 통해 호출하는가?",
-    "expected_source_contains": "sample.md"
+    "question": "LangChain은 이 프로젝트에서 어떤 역할을 하나요?",
+    "expected_source_contains": "langchain_orchestration.md"
+  },
+  {
+    "question": "persistent vector store로 무엇을 사용하나요?",
+    "expected_source_contains": "chroma_vector_store.md"
+  },
+  {
+    "question": "eval 명령은 어떤 retrieval metric을 계산하나요?",
+    "expected_source_contains": "retrieval_eval.md"
   }
 ]
