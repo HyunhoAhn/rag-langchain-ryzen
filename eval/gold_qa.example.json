@@ -1,7 +1,14 @@
 [
   {
-    "question": "What is this project intended to verify?",
-    "expected_sources": [],
-    "expected_answer_contains": ["RAG"]
+    "question": "이 프로젝트는 어떤 환경에서 local RAG 파이프라인을 검증하나요?",
+    "expected_source_contains": "sample.md"
+  },
+  {
+    "question": "이 프로젝트의 RAG 구성요소는 무엇인가?",
+    "expected_source_contains": "sample.md"
+  },
+  {
+    "question": "LLM은 어떤 서버를 통해 호출하는가?",
+    "expected_source_contains": "sample.md"
   }
 ]

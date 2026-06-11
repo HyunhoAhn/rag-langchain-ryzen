@@ -6,6 +6,7 @@ import argparse
 import sys
 
 from rag_app.config import load_config
+from rag_app.eval_retrieval import evaluate_retrieval, format_evaluation_report
 from rag_app.ingest import ingest_documents
 from rag_app.lemonade_client import LemonadeCheckResult, check_lemonade_models
 from rag_app.rag_chain import LemonadeGenerationError, answer_question, format_source_list
@@ -137,8 +138,23 @@ def main(argv: list[str] | None = None) -> int:
         print(f"Total time: {result.total_time_seconds:.3f}s")
         return 0
 
-    print("not implemented yet")
-    return 0
+    if args.command == "eval":
+        config = load_config()
+        try:
+            result = evaluate_retrieval(config, args.gold_file, top_k=args.top_k)
+        except ValueError as exc:
+            print(f"Evaluation failed: {exc}")
+            return 1
+
+        if not result.store_ready:
+            print(empty_store_message(config))
+            return 1
+
+        print(format_evaluation_report(result, args.top_k))
+        return 0
+
+    parser.error(f"Unknown command: {args.command}")
+    return 2
 
 
 if __name__ == "__main__":

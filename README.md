@@ -34,6 +34,7 @@ Currently implemented:
 .\.venv\Scripts\python.exe -m rag_app ingest --data-dir .\data --reset
 .\.venv\Scripts\python.exe -m rag_app retrieve "Ask Question" --top-k 5
 .\.venv\Scripts\python.exe -m rag_app ask "Ask Question" --top-k 5
+.\.venv\Scripts\python.exe -m rag_app eval --gold-file .\eval\gold_qa.example.json --top-k 5
 ```
 
 The check command calls the OpenAI-compatible Lemonade Server `/models` endpoint, prints the configured `LEMONADE_BASE_URL` and `LEMONADE_CHAT_MODEL`, and reports whether the configured model appears in the returned model list when the response includes one.
@@ -48,7 +49,18 @@ The ask command retrieves context with the existing retrieval path, sends the qu
 .\.venv\Scripts\python.exe -m rag_app check
 ```
 
-The eval command is still a placeholder.
+The eval command reads a retrieval-only gold file, runs retrieval for each question, prints the retrieved source list, and reports Hit@K and MRR. The gold file format is:
+
+```json
+[
+  {
+    "question": "질문",
+    "expected_source_contains": "sample.md"
+  }
+]
+```
+
+The eval command does not call the LLM.
 
 ## Tests
 
