@@ -106,7 +106,7 @@ def finalize_answer(answer: str, chunks: list[RetrievedChunk]) -> str:
     lines = [line.rstrip() for line in stripped.splitlines() if line.strip() != UNSUPPORTED_ANSWER]
     while lines and not lines[-1].strip():
         lines.pop()
-    if not any(line.strip().startswith("출처:") for line in lines):
+    if not any("출처:" in line for line in lines):
         if lines:
             lines.append("")
         lines.append(_source_line(chunks))

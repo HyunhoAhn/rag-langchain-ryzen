@@ -59,6 +59,15 @@ def test_finalize_answer_keeps_supported_answer_and_source_line():
     assert answer == "LangChain과 Chroma를 사용합니다.\n\n출처: chunk 1"
 
 
+def test_finalize_answer_does_not_duplicate_inline_source_marker():
+    answer = finalize_answer(
+        "LangChain과 Chroma를 사용합니다. 출처: chunk 1",
+        [RetrievedChunk(rank=1, source="notes.md", page=None, text="one")],
+    )
+
+    assert answer == "LangChain과 Chroma를 사용합니다. 출처: chunk 1"
+
+
 def test_finalize_answer_preserves_exact_unsupported_answer():
     answer = finalize_answer(
         UNSUPPORTED_ANSWER,

@@ -25,7 +25,7 @@ def test_chunk_documents_uses_expected_splitter_settings():
     assert ". " in TEXT_SEPARATORS
 
 
-def test_build_embeddings_uses_cpu_and_normalization(monkeypatch, tmp_path):
+def test_build_embeddings_uses_cpu_normalization_and_local_cache_first(monkeypatch, tmp_path):
     captured = {}
 
     class FakeEmbeddings:
@@ -38,8 +38,36 @@ def test_build_embeddings_uses_cpu_and_normalization(monkeypatch, tmp_path):
 
     assert isinstance(embeddings, FakeEmbeddings)
     assert captured["model_name"] == "test-model"
-    assert captured["model_kwargs"] == {"device": "cpu"}
+    assert captured["model_kwargs"] == {"device": "cpu", "local_files_only": True}
     assert captured["encode_kwargs"] == {"normalize_embeddings": True}
+
+
+def test_build_embeddings_allows_download_when_local_cache_is_missing(monkeypatch, tmp_path):
+    calls = []
+
+    class FakeEmbeddings:
+        def __init__(self, **kwargs):
+            calls.append(kwargs)
+            if len(calls) == 1:
+                raise OSError("local model files were not found")
+
+    monkeypatch.setattr("rag_app.ingest.HuggingFaceEmbeddings", FakeEmbeddings)
+
+    embeddings = build_embeddings(_config(tmp_path))
+
+    assert isinstance(embeddings, FakeEmbeddings)
+    assert calls == [
+        {
+            "model_name": "test-model",
+            "model_kwargs": {"device": "cpu", "local_files_only": True},
+            "encode_kwargs": {"normalize_embeddings": True},
+        },
+        {
+            "model_name": "test-model",
+            "model_kwargs": {"device": "cpu"},
+            "encode_kwargs": {"normalize_embeddings": True},
+        },
+    ]
 
 
 def test_ingest_documents_resets_and_adds_chunks(tmp_path):

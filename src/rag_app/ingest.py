@@ -47,12 +47,25 @@ def build_text_splitter() -> RecursiveCharacterTextSplitter:
     )
 
 
+def _embedding_kwargs(config: AppConfig, *, local_files_only: bool = False) -> dict[str, object]:
+    model_kwargs: dict[str, object] = {"device": "cpu"}
+    if local_files_only:
+        model_kwargs["local_files_only"] = True
+
+    return {
+        "model_name": config.embedding_model,
+        "model_kwargs": model_kwargs,
+        "encode_kwargs": {"normalize_embeddings": True},
+    }
+
+
 def build_embeddings(config: AppConfig) -> HuggingFaceEmbeddings:
-    return HuggingFaceEmbeddings(
-        model_name=config.embedding_model,
-        model_kwargs={"device": "cpu"},
-        encode_kwargs={"normalize_embeddings": True},
-    )
+    try:
+        return HuggingFaceEmbeddings(**_embedding_kwargs(config, local_files_only=True))
+    except Exception:
+        pass
+
+    return HuggingFaceEmbeddings(**_embedding_kwargs(config))
 
 
 def chunk_documents(documents: list[Document]) -> list[Document]:
