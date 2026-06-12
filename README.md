@@ -13,6 +13,7 @@ This repository verifies that a minimal local RAG flow works end to end:
 - Retrieval results can be inspected directly from the CLI.
 - Answers are generated from retrieved source chunks.
 - Basic retrieval evaluation reports Hit@K and MRR.
+- This project intentially utilizes Korean to test its bilingual capability.
 
 The main developer interface is the CLI:
 
