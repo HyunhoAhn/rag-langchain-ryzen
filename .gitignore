@@ -12,3 +12,4 @@ data/*
 !data/lemonade_server.md
 !data/retrieval_eval.md
 *.log
+*.egg-info/
